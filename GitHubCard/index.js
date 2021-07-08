@@ -108,6 +108,7 @@ const createCard = function (obj) {
   bio.textContent = `Bio: ${obj.bio}`;
   cardInfo.classList.add("cardinfo--hidden");
   card.classList.add("card--closed");
+  profileLink.setAttribute("target", "_blank");
 
   // assembling the components;
   profile.appendChild(profileLink);
@@ -122,7 +123,8 @@ const createCard = function (obj) {
   card.appendChild(cardInfo);
 
   // add event listeners;
-  card.addEventListener("click", function () {
+  card.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") return;
     card.classList.toggle("card--expanded");
     card.classList.toggle("card--closed");
     cardInfo.classList.toggle("cardinfo--hidden");
