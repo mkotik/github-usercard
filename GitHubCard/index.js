@@ -39,7 +39,23 @@ axios
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "https://api.github.com/users/tetondan",
+  "https://api.github.com/users/dustinmyers",
+  "https://api.github.com/users/justsml",
+  "https://api.github.com/users/luishrd",
+  "https://api.github.com/users/bigknell",
+];
+
+followersArray.forEach((cur) => {
+  axios
+    .get(cur)
+    .then((response) => {
+      const card = createCard(response.data);
+      cardsContainer.appendChild(card);
+    })
+    .catch((error) => console.log(error));
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -90,6 +106,8 @@ const createCard = function (obj) {
   followers.textContent = `Followers: ${obj.followers}`;
   following.textContent = `Following: ${obj.following}`;
   bio.textContent = `Bio: ${obj.bio}`;
+  cardInfo.classList.add("cardinfo--hidden");
+  card.classList.add("card--closed");
 
   // assembling the components;
   profile.appendChild(profileLink);
@@ -102,6 +120,14 @@ const createCard = function (obj) {
   cardInfo.appendChild(bio);
   card.appendChild(img);
   card.appendChild(cardInfo);
+
+  // add event listeners;
+  card.addEventListener("click", function () {
+    card.classList.toggle("card--expanded");
+    card.classList.toggle("card--closed");
+    cardInfo.classList.toggle("cardinfo--hidden");
+    cardInfo.classList.toggle("cardinfo--shown");
+  });
 
   return card;
 };
