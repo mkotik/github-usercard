@@ -3,6 +3,17 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+const cardsContainer = document.querySelector(".cards");
+
+axios
+  .get("https://api.github.com/users/mkotik")
+  .then((response) => {
+    console.log(response.data);
+    const card = createCard(response.data);
+    cardsContainer.appendChild(card);
+    console.log(card);
+  })
+  .catch((error) => console.log(error));
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -28,7 +39,23 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  "https://api.github.com/users/tetondan",
+  "https://api.github.com/users/dustinmyers",
+  "https://api.github.com/users/justsml",
+  "https://api.github.com/users/luishrd",
+  "https://api.github.com/users/bigknell",
+];
+
+followersArray.forEach((cur) => {
+  axios
+    .get(cur)
+    .then((response) => {
+      const card = createCard(response.data);
+      cardsContainer.appendChild(card);
+    })
+    .catch((error) => console.log(error));
+});
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +76,63 @@ const followersArray = [];
       </div>
     </div>
 */
+
+const createCard = function (obj) {
+  // instantiate the elements
+  const card = document.createElement("div");
+  const img = document.createElement("img");
+  const cardInfo = document.createElement("div");
+  const name = document.createElement("h3");
+  const username = document.createElement("p");
+  const location = document.createElement("p");
+  const profile = document.createElement("p");
+  const profileLink = document.createElement("a");
+  const followers = document.createElement("p");
+  const following = document.createElement("p");
+  const bio = document.createElement("p");
+
+  // adding classes and textContent
+  card.classList.add("card");
+  img.src = obj.avatar_url;
+  cardInfo.classList.add("card-info");
+  name.classList.add("name");
+  name.textContent = obj.name;
+  username.classList.add("username");
+  username.textContent = obj.login;
+  location.textContent = `Location: ${obj.location}`; // will return null for now
+  profile.textContent = "Profile: ";
+  profileLink.setAttribute("href", `${obj.html_url}`);
+  profileLink.textContent = obj.html_url;
+  followers.textContent = `Followers: ${obj.followers}`;
+  following.textContent = `Following: ${obj.following}`;
+  bio.textContent = `Bio: ${obj.bio}`;
+  cardInfo.classList.add("cardinfo--hidden");
+  card.classList.add("card--closed");
+  profileLink.setAttribute("target", "_blank");
+
+  // assembling the components;
+  profile.appendChild(profileLink);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  card.appendChild(img);
+  card.appendChild(cardInfo);
+
+  // add event listeners;
+  card.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") return;
+    card.classList.toggle("card--expanded");
+    card.classList.toggle("card--closed");
+    cardInfo.classList.toggle("cardinfo--hidden");
+    cardInfo.classList.toggle("cardinfo--shown");
+  });
+
+  return card;
+};
 
 /*
   List of LS Instructors Github username's:
